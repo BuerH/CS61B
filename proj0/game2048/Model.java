@@ -110,13 +110,53 @@ public class Model extends Observable {
         boolean changed;
         changed = false;
 
-        // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
+        if (side == Side.NORTH) {
+            changed = moveNorth();
+        } else if (side == Side.WEST) {
+            board.setViewingPerspective(side);
+            changed = moveNorth();
+            board.setViewingPerspective(Side.NORTH);
+        } else if (side == Side.EAST) {
+            board.setViewingPerspective(side);
+            changed = moveNorth();
+            board.setViewingPerspective(Side.NORTH);
+        } else {
+            board.setViewingPerspective(side);
+            changed = moveNorth();
+            board.setViewingPerspective(Side.NORTH);
+        }
 
         checkGameOver();
         if (changed) {
             setChanged();
+        }
+        return changed;
+    }
+
+    public boolean moveNorth() {
+        boolean changed = false;
+        for (int col = 0; col < board.size(); col++) {
+            boolean[] isMerge = new boolean[board.size()];
+            for (int row = board.size() - 2; row > -1; row--) {
+                Tile curTile = board.tile(col, row);
+                if(curTile == null)
+                    continue;
+                int probe = row+1;
+                while (probe < board.size() && board.tile(col, probe) == null){
+                    probe ++;
+                }
+                if (probe < 4 && board.tile(col,probe) != null && curTile.value() == board.tile(col,probe).value() && !isMerge[probe]){
+                    board.move(col, probe, curTile);
+                    isMerge[probe] = true;
+                    changed = true;
+                    score += curTile.value()*2;
+                } else {
+                    board.move(col, probe - 1, curTile);
+                    changed = true;
+                }
+            }
         }
         return changed;
     }
@@ -137,7 +177,17 @@ public class Model extends Observable {
      *  Empty spaces are stored as null.
      * */
     public static boolean emptySpaceExists(Board b) {
-        // TODO: Fill in this function.
+        int size = b.size();
+        int i = 0;
+        while (i < size){
+            int j = 0;
+            while (j < size){
+                if (b.tile(j, i) == null)
+                    return true;
+                j++;
+            }
+            i++;
+        }
         return false;
     }
 
@@ -147,7 +197,17 @@ public class Model extends Observable {
      * given a Tile object t, we get its value with t.value().
      */
     public static boolean maxTileExists(Board b) {
-        // TODO: Fill in this function.
+        int size = b.size();
+        int i = 0;
+        while (i < size){
+            int j = 0;
+            while (j < size){
+                if (b.tile(j, i) != null && b.tile(j, i).value() == MAX_PIECE)
+                    return true;
+                j++;
+            }
+            i++;
+        }
         return false;
     }
 
@@ -158,8 +218,32 @@ public class Model extends Observable {
      * 2. There are two adjacent tiles with the same value.
      */
     public static boolean atLeastOneMoveExists(Board b) {
-        // TODO: Fill in this function.
-        return false;
+        if (emptySpaceExists(b)) {
+            return true;
+        } else {
+            int size = b.size();
+            int i = 0;
+            while (i < size){
+                int j = 0;
+                while (j < size){
+                    int value = b.tile(j, i).value();
+                    int value1 = 0, value2 = 0, value3 = 0, value4 = 0;
+                    if (j - 1 >= 0)
+                        value1 = b.tile(j - 1, i).value();
+                    if (j + 1 <= 3)
+                        value2 = b.tile(j + 1, i).value();
+                    if (i - 1 >= 0)
+                        value3 = b.tile(j, i - 1).value();
+                    if (i + 1 <= 3)
+                        value4 = b.tile(j, i + 1).value();
+                    if (value == value1 || value2 == value || value3 == value || value4 == value)
+                        return true;
+                    j++;
+                }
+                i++;
+            }
+            return false;
+        }
     }
 
 

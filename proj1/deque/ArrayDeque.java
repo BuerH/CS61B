@@ -28,9 +28,9 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         }
     }
 
-    int size;
-    T[] array;
-    int head, tail;
+    private int size;
+    private T[] array;
+    private int head, tail;
 
     public ArrayDeque() {
         array = (T[]) new Object[8];
@@ -124,5 +124,35 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     @Override
     public Iterator<T> iterator() {
         return new ArrayIterator();
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o instanceof ArrayDeque aD) {
+            if (aD.size() != this.size) {
+                return false;
+            } else {
+                for(int i = 0; i < size; i++) {
+                    if (!aD.get(i).equals(this.get(i))) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        } else if (o instanceof LinkedListDeque lD) {
+            if (lD.size() != this.size) {
+                return false;
+            } else {
+                for(int i = 0; i < size; i++) {
+                    if (!lD.get(i).equals(this.get(i))) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        } else {
+            return false;
+        }
     }
 }

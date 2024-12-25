@@ -77,7 +77,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
 
     @Override
     public int size() {
-        return this.size;
+        return size;
     }
 
     @Override
@@ -95,6 +95,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         Node<T> p = head.next;
         p.next.prev = p.prev;
         head.next = p.next;
+        size--;
         return p.val;
     }
 
@@ -103,6 +104,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         Node<T> p = head.prev;
         p.prev.next = p.next;
         head.prev = p.prev;
+        size--;
         return p.val;
     }
 

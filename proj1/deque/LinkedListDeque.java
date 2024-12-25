@@ -48,23 +48,19 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         newNode.val = item;
         newNode.prev = head;
         newNode.next = head.next;
+        head.next.prev = newNode;
         head.next = newNode;
-        if (head.prev == head){
-            head.prev = newNode;
-        }
         ++size;
     }
 
     @Override
     public void addLast(T item) {
         Node<T> newNode = new Node<>();
-        newNode.prev = head.prev;
-        head.prev = newNode;
+        newNode.val = item;
         newNode.next = head;
-        newNode.prev.next = newNode;
-        if (head.next == head){
-            head.next = newNode;
-        }
+        newNode.prev = head.prev;
+        head.prev.next = newNode;
+        head.prev = newNode;
         ++size;
     }
 

@@ -10,11 +10,11 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         Node<T> prev;
     }
 
-    private class ListIterator implements Iterator<T>{
+    private class ListIterator implements Iterator<T> {
 
         private Node<T> wizpos;
 
-        public ListIterator(){
+        public ListIterator() {
             wizpos = head;
         }
         @Override
@@ -34,7 +34,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
 
     private Node<T> head;
     private int size;
-    public LinkedListDeque(){
+    public LinkedListDeque() {
         head = new Node<>();
         head.val = null;
         head.next = head;
@@ -66,8 +66,9 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
 
     @Override
     public boolean isEmpty() {
-        if (head.next == head)
+        if (head.next == head) {
             return true;
+        }
         return false;
     }
 
@@ -79,7 +80,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     @Override
     public void printDeque() {
         Node<T> p = head;
-        while (p.next != head){
+        while (p.next != head) {
             System.out.print(p.next.val + " ");
             p = p.next;
         }
@@ -88,7 +89,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
 
     @Override
     public T removeFirst() {
-        if (head.next == head){
+        if (head.next == head) {
             return null;
         }
         Node<T> p = head.next;
@@ -116,21 +117,23 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
             return null;
         int i = 0;
         Node<T> p = head.next;
-        while (i < index){
+        while (i < index) {
             p = p.next;
+            i++;
         }
         return p.val;
     }
 
-
-    public T getRecursive(int index){
-        if (index >= size)
+    public T getRecursive(int index) {
+        if (index >= size) {
             return null;
+        }
         return getIndexByRec(head.next, index);
     }
-    public T getIndexByRec(Node<T> cur, int index){
-        if(index == 0)
+    public T getIndexByRec(Node<T> cur, int index) {
+        if(index == 0) {
             return cur.val;
+        }
         return getIndexByRec(cur.next, index-1);
     }
 

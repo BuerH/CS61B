@@ -4,17 +4,18 @@ import java.util.Iterator;
 
 public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
 
-    private class ArrayIterator implements Iterator<T>{
+    private class ArrayIterator implements Iterator<T> {
         private int wizpos;
         private int sum;
-        public ArrayIterator(){
+        public ArrayIterator() {
             wizpos = head;
             sum = size;
         }
         @Override
         public boolean hasNext() {
-            if (sum > 0)
+            if (sum > 0) {
                 return true;
+            }
             return false;
         }
 
@@ -30,17 +31,19 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     int size;
     T[] array;
     int head, tail;
-    public ArrayDeque(){
+
+    public ArrayDeque() {
         array = (T[]) new Object[8];
         size = 0;
         head = 0;
         tail = 0;
     }
-    public void resize(int newSize){
+
+    public void resize(int newSize) {
         T[] newArray = (T[]) new Object[newSize];
         if (head <= tail){
             System.arraycopy(array, head, newArray, 0, size);
-        }else {
+        } else {
             System.arraycopy(array, head, newArray, 0, size-1);
             System.arraycopy(array, 0, newArray, size-1, tail);
         }

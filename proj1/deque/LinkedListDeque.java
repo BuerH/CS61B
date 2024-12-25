@@ -35,6 +35,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     private Node<T> head;
     private int size;
     public LinkedListDeque(){
+        head = new Node<>();
         head.val = null;
         head.next = head;
         head.prev = head;
@@ -69,7 +70,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
 
     @Override
     public boolean isEmpty() {
-        if (head.next == null)
+        if (head.next == head)
             return true;
         return false;
     }

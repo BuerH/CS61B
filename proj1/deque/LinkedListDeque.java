@@ -14,13 +14,14 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
 
         private Node<T> wizpos;
 
-        public ListIterator() {
+        ListIterator() {
             wizpos = head;
         }
         @Override
         public boolean hasNext() {
-            if (wizpos.next != head)
+            if (wizpos.next != head) {
                 return true;
+            }
             return false;
         }
 
@@ -101,7 +102,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
 
     @Override
     public T removeLast() {
-        if (head.next == head){
+        if (head.next == head) {
             return null;
         }
         Node<T> p = head.prev;
@@ -113,8 +114,9 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
 
     @Override
     public T get(int index) {
-        if (index >= size)
+        if (index >= size) {
             return null;
+        }
         int i = 0;
         Node<T> p = head.next;
         while (i < index) {
@@ -131,10 +133,10 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         return getIndexByRec(head.next, index);
     }
     public T getIndexByRec(Node<T> cur, int index) {
-        if(index == 0) {
+        if (index == 0) {
             return cur.val;
         }
-        return getIndexByRec(cur.next, index-1);
+        return getIndexByRec(cur.next, index - 1);
     }
 
     @Override
@@ -151,6 +153,9 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
                 return false;
             } else {
                 for(int i = 0; i < size; i++) {
+                    if (aD.get(i) == null && get(i) == null) {
+                        continue;
+                    }
                     if (!aD.get(i).equals(this.get(i))) {
                         return false;
                     }
@@ -162,6 +167,9 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
                 return false;
             } else {
                 for(int i = 0; i < size; i++) {
+                    if (lD.get(i) == null && get(i) == null) {
+                        continue;
+                    }
                     if (!lD.get(i).equals(this.get(i))) {
                         return false;
                     }

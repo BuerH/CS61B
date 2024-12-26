@@ -2,7 +2,7 @@ package deque;
 
 import java.util.Iterator;
 
-public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
+public class LinkedListDeque<T> implements Deque<T> {
 
     private class Node<T> {
         T val;
@@ -148,31 +148,26 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof ArrayDeque) {
-            ArrayDeque<T> aD = (ArrayDeque<T>) o;
-            if (aD.size() != this.size) {
-                return false;
+        } else if (o instanceof Deque<?>) {
+            Deque<T> deque = null;
+            if (o instanceof ArrayDeque<?>) {
+                deque = (ArrayDeque<T>) o;
             } else {
-                for(int i = 0; i < size; i++) {
-                    if (aD.get(i) == null && get(i) == null) {
-                        continue;
-                    }
-                    if (!aD.get(i).equals(this.get(i))) {
-                        return false;
-                    }
-                }
-                return true;
+                deque = (LinkedListDeque<T>) o;
             }
-        } else if (o instanceof LinkedListDeque) {
-            LinkedListDeque<T> lD = (LinkedListDeque<T>) o;
-            if (lD.size() != this.size) {
+            if (deque.size() != this.size) {
                 return false;
             } else {
-                for(int i = 0; i < size; i++) {
-                    if (lD.get(i) == null && get(i) == null) {
-                        continue;
-                    }
-                    if (!lD.get(i).equals(this.get(i))) {
+                Iterator<T> it = this.iterator();
+                Iterator<T> oit = deque.iterator();
+                while (it.hasNext()){
+                    T thisE = it.next();
+                    T otherE = oit.next();
+                    if (thisE == null) {
+                        if (otherE != null) {
+                            return false;
+                        }
+                    } else if (!thisE.equals(otherE)) {
                         return false;
                     }
                 }

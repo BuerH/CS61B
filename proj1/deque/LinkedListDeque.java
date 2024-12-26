@@ -132,7 +132,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         }
         return getIndexByRec(head.next, index);
     }
-    public T getIndexByRec(Node<T> cur, int index) {
+    private T getIndexByRec(Node<T> cur, int index) {
         if (index == 0) {
             return cur.val;
         }

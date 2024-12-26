@@ -143,10 +143,12 @@ public class LinkedListDequeTest {
         LinkedListDeque<String> lld2 = new LinkedListDeque<>();
         LinkedListDeque<String> lld3 = lld1;
         ArrayDeque<Integer> ad1 = new ArrayDeque<>();
+        ArrayDeque<Integer> ad2 = new ArrayDeque<>();
         for (int i = 0; i < 10000; i+=3) {
             lld1.addLast(null);
             lld2.addLast(null);
             ad1.addLast(i);
+            ad2.addLast(i);
         }
         for (int i = 0; i < 3000; i+=2) {
             lld1.removeFirst();
@@ -158,5 +160,6 @@ public class LinkedListDequeTest {
         assertTrue("lld1 should be equals lld2", lld1.equals(lld2));
         assertTrue("lld1 should be equals lld2", lld2.equals(lld3));
         assertTrue("lld1 should be equals lld2", !lld1.equals(ad1));
+        assertTrue("ad1 should be equals ad2", ad1.equals(ad2));
     }
 }

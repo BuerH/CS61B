@@ -64,7 +64,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
             resize(array.length * 2);
         }
         array[tail] = item;
-        tail += 1;
+        tail = (tail + 1) % array.length;
         size++;
     }
 

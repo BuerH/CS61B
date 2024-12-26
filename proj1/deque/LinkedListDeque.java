@@ -66,9 +66,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     }
 
     @Override
-    public Boolean isEmpty() {
-        return head.next == head;
-    }
+    public boolean isEmpty() { return head.next == head; }
 
     @Override
     public int size() {

@@ -87,7 +87,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
 
     @Override
     public T removeFirst() {
-        if (head.next == head) {
+        if (isEmpty()) {
             return null;
         }
         Node<T> p = head.next;
@@ -99,7 +99,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
 
     @Override
     public T removeLast() {
-        if (head.next == head) {
+        if (isEmpty()) {
             return null;
         }
         Node<T> p = head.prev;

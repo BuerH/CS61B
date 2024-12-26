@@ -1,4 +1,4 @@
-package gh2;
+package deque;
 
 public class MaxArrayDeque {
 }

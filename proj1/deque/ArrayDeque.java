@@ -69,7 +69,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     }
 
     @Override
-    public boolean isEmpty() {
+    public Boolean isEmpty() {
         return size == 0;
     }
 
@@ -118,6 +118,9 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
 
     @Override
     public T get(int index) {
+        if (index >= size) {
+            return null;
+        }
         return array[(head + index) % array.length];
     }
 
@@ -152,7 +155,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
             }
         } else if (o instanceof LinkedListDeque<?>) {
             LinkedListDeque<T> deque = (LinkedListDeque<T>) o;
-            if (deque.size() != this.size) {
+            if (deque.size() != this.size()) {
                 return false;
             } else {
                 Iterator<T> it = this.iterator();

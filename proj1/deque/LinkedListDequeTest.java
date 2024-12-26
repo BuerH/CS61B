@@ -1,5 +1,6 @@
 package deque;
 
+import edu.princeton.cs.algs4.StdRandom;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -139,26 +140,69 @@ public class LinkedListDequeTest {
 
     @Test
     public void equalsTest(){
-        LinkedListDeque<Integer> lld1 = new LinkedListDeque<>();
-        LinkedListDeque<Integer> lld2 = new LinkedListDeque<>();
-        LinkedListDeque<Integer> lld3 = lld1;
-        ArrayDeque<Integer> ad1 = new ArrayDeque<>();
-        ArrayDeque<Integer> ad2 = new ArrayDeque<>();
-        for (int i = 0; i < 10000; i+=3) {
-            lld1.addLast(i);
-            lld2.addLast(i);
-            ad1.addLast(i);
-            ad2.addLast(i);
-        }
-        for (int i = 0; i < 3000; i+=2) {
-            lld1.removeFirst();
-            lld2.removeFirst();
-            ad1.removeFirst();
+        LinkedListDeque<Integer> lld = new LinkedListDeque<>();
+        ArrayDeque<Integer> ad = new ArrayDeque<>();
+        for (int i = 0; i < 10000; i+=1) {
+            int randVal = StdRandom.uniform(0, 100);
+            lld.addLast(randVal);
+            ad.addLast(randVal);
         }
 
-        assertTrue("lld1 should be equals lld2", lld1.equals(lld2));
-        assertTrue("lld1 should be equals lld2", lld2.equals(lld3));
-        assertTrue("lld1 should be equals lld2", lld1.equals(ad1));
-        assertTrue("ad1 should be equals ad2", !ad1.equals(ad2));
+        assertTrue("lld1 should be equals lld2", ad.equals(lld));
+
+    }
+    @Test
+    public void randomizedInsertionAndDeletion(){
+        ArrayDeque<Integer> deque = new ArrayDeque<>();
+        LinkedListDeque<Integer> deque2 = new LinkedListDeque<>();
+        int N = 10000;
+        for (int i =0; i<N; i++) {
+            int operationNumber = StdRandom.uniform(0, 4);
+            int randValue = StdRandom.uniform(0, 100);
+            if (operationNumber == 0) {
+                deque.addFirst(randValue);
+                deque2.addFirst(randValue);
+                assertEquals((Integer) randValue, deque.removeFirst());
+                assertEquals((Integer) randValue, deque2.removeFirst());
+            } else if (operationNumber == 1) {
+                deque.addLast(randValue);
+                deque2.addLast(randValue);
+                assertEquals((Integer) randValue, deque.removeLast());
+                assertEquals((Integer) randValue, deque2.removeLast());
+            } else if (operationNumber == 2) {
+                System.out.println(deque.size());
+                Integer num1 = deque.get(0);
+                Integer num2 = deque.removeFirst();
+                assertEquals(num1, num2);
+                assertEquals(deque2.get(0), deque2.removeFirst());
+            } else if (operationNumber == 3) {
+                Integer num1 = deque.get(deque.size());
+                Integer num2 = deque.removeLast();
+                assertEquals(num1, num2);
+            } else if (operationNumber == 4) {
+                boolean actual1 = deque.equals(deque2);
+                boolean actual2 = deque2.equals(deque);
+                assertEquals(true, actual1);
+                assertEquals(true, actual2);
+            }
+        }
+    }
+
+    @Test
+    public void equals() {
+        ArrayDeque<Boolean> deque = new ArrayDeque<>();
+        deque.addLast(true);
+        deque.addFirst(false);
+        deque.addFirst(false);
+        deque.addFirst(true);
+
+        LinkedListDeque<Boolean> deque2 = new LinkedListDeque<>();
+        deque2.addLast(true);
+        deque2.addFirst(false);
+        deque2.addFirst(false);
+        deque2.addFirst(false);
+
+        assertEquals(false, deque2.equals(deque));
+        assertEquals(false, deque.equals(deque2));
     }
 }

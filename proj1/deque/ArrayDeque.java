@@ -41,7 +41,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
 
     public void resize(int newSize) {
         T[] newArray = (T[]) new Object[newSize];
-        for (int i = 0; i < size; i++){
+        for (int i = 0; i < size; i++) {
             newArray[i] = array[(head++) % size];
         }
         head = 0;

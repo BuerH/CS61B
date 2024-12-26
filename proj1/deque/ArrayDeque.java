@@ -68,8 +68,6 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         size++;
     }
 
-    @Override
-    public boolean isEmpty() { return size == 0; }
 
     @Override
     public int size() {
@@ -131,6 +129,30 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
+        } else if (o instanceof Deque<?>) {
+            Deque<T> deque = (Deque<T>) o;
+            if (deque.size() != this.size) {
+                return false;
+            } else {
+                for(int i = 0; i < size; i++) {
+                    if (get(i) == null) {
+                        if (deque.get(i) != null) {
+                            return false;
+                        }
+                    } else if (!get(i).equals(deque.get(i))) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    /*public boolean equals(Object o) {
+        if (this == o) {
+            return true;
         } else if (o instanceof ArrayDeque<?>) {
             ArrayDeque<T> deque = (ArrayDeque<T>) o;
             if (deque.size() != this.size) {
@@ -174,43 +196,5 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         } else {
             return false;
         }
-    }
-    /*public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        } else if (o instanceof ArrayDeque) {
-            ArrayDeque<T> aD = (ArrayDeque<T>) o;
-            if (aD.size() != this.size) {
-                return false;
-            } else {
-                for(int i = 0; i < size; i++) {
-                    if (aD.get(i) == null && get(i) == null) {
-                        continue;
-                    }
-                    if (!aD.get(i).equals(this.get(i))) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        } else if (o instanceof LinkedListDeque) {
-            LinkedListDeque<T> lD = (LinkedListDeque<T>) o;
-            if (lD.size() != this.size) {
-                return false;
-            } else {
-                for(int i = 0; i < size; i++) {
-                    if (lD.get(i) == null && get(i) == null) {
-                        continue;
-                    }
-                    if (!lD.get(i).equals(this.get(i))) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        } else {
-            return false;
-        }
     }*/
-
 }

@@ -5,12 +5,6 @@ import org.junit.Test;
 public class ArrayDequeTest {
 
     @Test
-    public void resizeTest(){
-        ArrayDeque<Integer> ad = new ArrayDeque<>();
-        ad.resize(16);
-    }
-
-    @Test
     public void addFirstLastTest(){
         ArrayDeque<Integer> ad = new ArrayDeque<>();
         ad.addFirst(16);

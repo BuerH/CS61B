@@ -67,10 +67,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
 
     @Override
     public boolean isEmpty() {
-        if (head.next == head) {
-            return true;
-        }
-        return false;
+        return head.next == head;
     }
 
     @Override
@@ -132,6 +129,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         }
         return getIndexByRec(head.next, index);
     }
+
     private T getIndexByRec(Node<T> cur, int index) {
         if (index == 0) {
             return cur.val;

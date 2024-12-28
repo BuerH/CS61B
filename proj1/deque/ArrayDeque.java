@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
 
-    private class ArrayIterator implements Iterator<T> {
+    protected class ArrayIterator implements Iterator<T> {
         private int wizpos;
         private int sum;
         ArrayIterator() {

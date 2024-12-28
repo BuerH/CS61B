@@ -13,11 +13,11 @@ public class MaxArrayDeque<T> extends ArrayDeque<T> {
         return getT(comparator);
     }
 
-    private T getT(Comparator<T> comparator) {
+    private T getT(Comparator<T> comparatorS) {
         T maxVal = get(0);
         for (int i = 0; i < size(); i++) {
             T value = get(i);
-            maxVal = comparator.compare((T)value, (T)maxVal) > 0 ? value : maxVal;
+            maxVal = comparatorS.compare((T) value, (T) maxVal) > 0 ? value : maxVal;
         }
         return maxVal;
     }

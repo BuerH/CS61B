@@ -43,8 +43,8 @@ public class GuitarString {
      */
     public void tic() {
         Double first = buffer.removeFirst();
-        Double second = buffer.get(0);
-        buffer.addLast((first + second) * 0.996 / 2);
+        Double second = sample();
+        buffer.addLast((first + second) * DECAY / 2.0);
     }
 
     /* Return the double at the front of the buffer. */

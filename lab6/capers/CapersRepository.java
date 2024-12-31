@@ -43,7 +43,10 @@ public class CapersRepository {
      */
     public static void writeStory(String text) {
         File f = Utils.join(".capers", "story");
-        String content = Utils.readContentsAsString(f);
+        String content = "";
+        if (f.exists()) {
+            content = Utils.readContentsAsString(f);
+        }
         Utils.writeContents(f, content, text, "\n");
         content = Utils.readContentsAsString(f);
         System.out.print(content);

@@ -2,10 +2,10 @@ package bstmap;
 
 import java.util.*;
 
-public class BSTMap<K,V> implements Map61B<K, V>, Comparable<K> {
+public class BSTMap<K extends Comparable<K>,V> implements Map61B<K, V>{
 
     private Node root;
-    int size = 0;
+    private int size = 0;
 
     private class Node<K, V> implements Comparable<K> {
         public K key;
@@ -41,7 +41,7 @@ public class BSTMap<K,V> implements Map61B<K, V>, Comparable<K> {
     }
 
     @Override
-    public boolean containsKey(Object key) {
+    public boolean containsKey(K key) {
         Node p = root;
         while (p != null) {
             if (p.compareTo(key) > 0) {
@@ -56,7 +56,7 @@ public class BSTMap<K,V> implements Map61B<K, V>, Comparable<K> {
     }
 
     @Override
-    public Object get(Object key) {
+    public V get(K key) {
         Node p = root;
         while (p != null) {
             if (p.compareTo(key) > 0) {
@@ -64,7 +64,7 @@ public class BSTMap<K,V> implements Map61B<K, V>, Comparable<K> {
             } else if (p.compareTo(key) < 0) {
                 p = p.right;
             } else {
-                return p.val;
+                return (V) p.val;
             }
         }
         return null;
@@ -76,7 +76,7 @@ public class BSTMap<K,V> implements Map61B<K, V>, Comparable<K> {
     }
 
     @Override
-    public void put(Object key, Object value) {
+    public void put(K key, V value) {
         if (root == null) {
             root = new Node<>(key, value);
             size = 1;
@@ -116,8 +116,8 @@ public class BSTMap<K,V> implements Map61B<K, V>, Comparable<K> {
     }
 
     @Override
-    public Object remove(Object key) {
-        Object val = null;
+    public V remove(K key) {
+        V val = null;
         Node cur, pre;
         Node p = root;
         while (p != null) {
@@ -143,7 +143,7 @@ public class BSTMap<K,V> implements Map61B<K, V>, Comparable<K> {
                         cur.left = p.left;
                         cur.right = p.right;
                     }
-                    val = p.val;
+                    val = (V)p.val;
                     if (root == p) {
                         root = cur;
                     } else {
@@ -166,14 +166,14 @@ public class BSTMap<K,V> implements Map61B<K, V>, Comparable<K> {
                         cur.left = p.left;
                         cur.right = p.right;
                     }
-                    val = p.val;
+                    val = (V) p.val;
                     if (root == p) {
                         root = cur;
                     } else {
                         p = cur;
                     }
                 } else {
-                    val = p.val;
+                    val = (V) p.val;
                     if (root == p) {
                         root = null;
                     } else {
@@ -188,8 +188,8 @@ public class BSTMap<K,V> implements Map61B<K, V>, Comparable<K> {
     }
 
     @Override
-    public Object remove(Object key, Object value) {
-        Object val = null;
+    public V remove(K key, V value) {
+        V val = null;
         Node cur, pre;
         Node p = root;
         while (p != null) {
@@ -216,7 +216,7 @@ public class BSTMap<K,V> implements Map61B<K, V>, Comparable<K> {
                             cur.left = p.left;
                             cur.right = p.right;
                         }
-                        val = p.val;
+                        val = (V) p.val;
                         if (root == p) {
                             root = cur;
                         } else {
@@ -239,14 +239,14 @@ public class BSTMap<K,V> implements Map61B<K, V>, Comparable<K> {
                             cur.left = p.left;
                             cur.right = p.right;
                         }
-                        val = p.val;
+                        val = (V) p.val;
                         if (root == p) {
                             root = cur;
                         } else {
                             p = cur;
                         }
                     } else {
-                        val = p.val;
+                        val = (V) p.val;
                         if (root == p) {
                             root = null;
                         } else {
@@ -290,9 +290,5 @@ public class BSTMap<K,V> implements Map61B<K, V>, Comparable<K> {
             }
             return key;
         }
-    }
-    @Override
-    public int compareTo(K o) {
-        return 0;
     }
 }

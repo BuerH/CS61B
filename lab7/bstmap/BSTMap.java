@@ -126,11 +126,13 @@ public class BSTMap<K extends Comparable<K>,V> implements Map61B<K, V>{
             } else if (p.compareTo(key) < 0) {
                 p = p.right;
             } else {
+                //键相同，选择左子树最大值
                 if (p.left != null) {
                     cur = p.left;
+                    //左孩子的右子树为空
                     if(cur.right == null) {
                         cur.right = p.right;
-                    } else {
+                    } else {//左孩子右子树不为空
                         pre = cur;
                         cur = cur.right;
                         while (cur.right != null) {
@@ -149,7 +151,7 @@ public class BSTMap<K extends Comparable<K>,V> implements Map61B<K, V>{
                     } else {
                         p = cur;
                     }
-                } else if (p.right != null) {
+                } else if (p.right != null) {//没有左子树，选择右子树最小值
                     cur = p.right;
                     if(cur.left == null) {
                         cur.left = p.left;
@@ -172,7 +174,7 @@ public class BSTMap<K extends Comparable<K>,V> implements Map61B<K, V>{
                     } else {
                         p = cur;
                     }
-                } else {
+                } else { //没有子树
                     val = (V) p.val;
                     if (root == p) {
                         root = null;

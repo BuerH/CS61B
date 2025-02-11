@@ -135,51 +135,57 @@ public class RedBlackTree<T extends Comparable<T>> {
         RBTreeNode<T> mid = node;
         Stack<RBTreeNode<T>> stack = new Stack<>();
         while (mid != null) {
-            parent = mid;
+            stack.push(mid);
             if (item.compareTo(mid.item) > 0) {
                 mid = mid.right;
-                if (parent.right == null) {
-                    parent.right = newNode;
+                if (mid == null) {
+                    stack.peek().right = newNode;
                 }
             } else if (item.compareTo(mid.item) <= 0) {
                 mid = mid.left;
-                if (parent.left == null) {
-                    parent.left = newNode;
+                if (mid == null) {
+                    stack.peek().left = newNode;
                 }
-            }
-        }
-        mid = node;
-        RBTreeNode<T> gparent = null;
-        while (mid != parent) {
-            gparent = mid;
-            if (item.compareTo(mid.item) > 0) {
-                mid = mid.right;
-            } else if (item.compareTo(mid.item) <= 0) {
-                mid = mid.left;
             }
         }
         // TODO: Rotate left operation
-        if ((parent != node || parent.left == null) && isRed(parent.right)) {
-            parent = rotateLeft(parent);
-            if (gparent != null) {
-                if (parent.item.compareTo(gparent.item) > 0) {
-                    gparent.right = parent;
-                } else if (parent.item.compareTo(gparent.item) <= 0) {
-                    gparent.left = parent;
+        while (!stack.isEmpty()) {
+            mid = stack.pop();
+            if ((stack.size() == 0 || mid.left == null) && isRed(mid.right) && !isRed(mid.left)) {
+                mid = rotateLeft(mid);
+                if (!stack.isEmpty()) {
+                    if (mid.item.compareTo(stack.peek().item) > 0) {
+                        stack.peek().right = mid;
+                    } else if (mid.item.compareTo(stack.peek().item) <= 0) {
+                        stack.peek().left = mid;
+                    }
+                } else {
+                    node = mid;
                 }
             }
-        }
-        // TODO: Rotate right operation
-        if (isRed(parent)) {
-            if (isRed(parent.left)) {
-
-                parent = rotateRight(gparent);
+            // TODO: Rotate right operation
+            if (isRed(mid)) {
+                if (isRed(mid.left)) {
+                    mid = stack.pop();
+                    if (stack.size() == 0) {
+                        node = rotateRight(node);
+                        mid = node;
+                    } else {
+                        mid = rotateRight(mid);
+                        if (mid.item.compareTo(stack.peek().item) > 0) {
+                            stack.peek().right = mid;
+                        } else if (mid.item.compareTo(stack.peek().item) <= 0) {
+                            stack.peek().left = mid;
+                        }
+                    }
+                }
+            }
+            // TODO: Color flip
+            if (isRed(mid.left) && isRed(mid.right)) {
+                flipColors(mid);
             }
         }
-        // TODO: Color flip
-        if (isRed(parent.left) && isRed(parent.right)) {
-            flipColors(parent);
-        }
+
         return node; //fix this return statement
     }
 

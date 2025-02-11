@@ -1,16 +1,18 @@
 package src;
 
+import java.util.Stack;
+
 public class RedBlackTree<T extends Comparable<T>> {
 
     /* Root of the tree. */
-    RBTreeNode<T> root;
+    public RBTreeNode<T> root;
 
-    static class RBTreeNode<T> {
+    public static class RBTreeNode<T> {
 
-        final T item;
-        boolean isBlack;
-        RBTreeNode<T> left;
-        RBTreeNode<T> right;
+        public final T item;
+        public boolean isBlack;
+        public RBTreeNode<T> left;
+        public RBTreeNode<T> right;
 
         /**
          * Creates a RBTreeNode with item ITEM and color depending on ISBLACK
@@ -30,8 +32,8 @@ public class RedBlackTree<T extends Comparable<T>> {
          * @param left
          * @param right
          */
-        RBTreeNode(boolean isBlack, T item, RBTreeNode<T> left,
-                   RBTreeNode<T> right) {
+        public RBTreeNode(boolean isBlack, T item, RBTreeNode<T> left,
+                          RBTreeNode<T> right) {
             this.isBlack = isBlack;
             this.item = item;
             this.left = left;
@@ -51,8 +53,10 @@ public class RedBlackTree<T extends Comparable<T>> {
      * and right children
      * @param node
      */
-    void flipColors(RBTreeNode<T> node) {
-        // TODO: YOUR CODE HERE
+    public void flipColors(RBTreeNode<T> node) {
+        node.isBlack = !node.isBlack;
+        node.left.isBlack = !node.left.isBlack;
+        node.right.isBlack = !node.right.isBlack;
     }
 
     /**
@@ -62,9 +66,16 @@ public class RedBlackTree<T extends Comparable<T>> {
      * @param node
      * @return
      */
-    RBTreeNode<T> rotateRight(RBTreeNode<T> node) {
-        // TODO: YOUR CODE HERE
-        return null;
+    public RBTreeNode<T> rotateRight(RBTreeNode<T> node) {
+        boolean rNode = node.left.isBlack;//记录左孩子颜色
+        RBTreeNode<T> lc = node.left.right;
+        node.left.isBlack = node.isBlack; //左孩子颜色变为根的颜色
+        RBTreeNode<T> mid = node;         //记录根节点
+        node = node.left;                 //左孩子变为根节点
+        mid.isBlack = rNode;              //右孩子变为原来左孩子颜色
+        mid.left = lc;                    //原先的根节点右节点变为原左孩子的右孩子
+        node.right = mid;                 //现在根节点的右节点变为之前的根节点
+        return node;
     }
 
     /**
@@ -74,9 +85,16 @@ public class RedBlackTree<T extends Comparable<T>> {
      * @param node
      * @return
      */
-    RBTreeNode<T> rotateLeft(RBTreeNode<T> node) {
-        // TODO: YOUR CODE HERE
-        return null;
+    protected RBTreeNode<T> rotateLeft(RBTreeNode<T> node) {
+        boolean rNode = node.right.isBlack; //右孩子颜色
+        RBTreeNode<T> rc = node.right.left;
+        node.right.isBlack = node.isBlack;  //右孩子颜色变为根的颜色
+        RBTreeNode<T> mid = node;           //记录根节点的数据
+        node = node.right;                  //根节点变为右节点
+        mid.isBlack = rNode;                //原先的根节点颜色变为右孩子颜色
+        mid.right = rc;                     //原先的根节点右节点变为原右孩子的左孩子
+        node.left = mid;                    //左节点变为原先的根节点
+        return node;
     }
 
     /**
@@ -108,16 +126,61 @@ public class RedBlackTree<T extends Comparable<T>> {
      */
     private RBTreeNode<T> insert(RBTreeNode<T> node, T item) {
         // TODO: Insert (return) new red leaf node.
-
+        RBTreeNode<T> newNode = new RBTreeNode<>(false, item);
+        if (node == null) {
+            node = newNode;
+            return node;
+        }
         // TODO: Handle normal binary search tree insertion.
-
+        RBTreeNode<T> mid = node;
+        Stack<RBTreeNode<T>> stack = new Stack<>();
+        while (mid != null) {
+            parent = mid;
+            if (item.compareTo(mid.item) > 0) {
+                mid = mid.right;
+                if (parent.right == null) {
+                    parent.right = newNode;
+                }
+            } else if (item.compareTo(mid.item) <= 0) {
+                mid = mid.left;
+                if (parent.left == null) {
+                    parent.left = newNode;
+                }
+            }
+        }
+        mid = node;
+        RBTreeNode<T> gparent = null;
+        while (mid != parent) {
+            gparent = mid;
+            if (item.compareTo(mid.item) > 0) {
+                mid = mid.right;
+            } else if (item.compareTo(mid.item) <= 0) {
+                mid = mid.left;
+            }
+        }
         // TODO: Rotate left operation
-
+        if ((parent != node || parent.left == null) && isRed(parent.right)) {
+            parent = rotateLeft(parent);
+            if (gparent != null) {
+                if (parent.item.compareTo(gparent.item) > 0) {
+                    gparent.right = parent;
+                } else if (parent.item.compareTo(gparent.item) <= 0) {
+                    gparent.left = parent;
+                }
+            }
+        }
         // TODO: Rotate right operation
+        if (isRed(parent)) {
+            if (isRed(parent.left)) {
 
+                parent = rotateRight(gparent);
+            }
+        }
         // TODO: Color flip
-
-        return null; //fix this return statement
+        if (isRed(parent.left) && isRed(parent.right)) {
+            flipColors(parent);
+        }
+        return node; //fix this return statement
     }
 
 }

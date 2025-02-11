@@ -37,7 +37,7 @@ public class TestRedBlackTree {
         node1.left = node2;
         node2.left = node3;
 
-        RedBlackTree.RBTreeNode<Integer> newRoot = rbtree.rotateRight(node1);
+        RedBlackTree.RBTreeNode<Integer> newRoot = ((TestableRedBlackTree) rbtree).rotateRight(node1);
         assertThat(newRoot.item).isEqualTo(9);
         assertThat(newRoot.right.item).isEqualTo(10);
         assertThat(newRoot.left.item).isEqualTo(8);
@@ -370,19 +370,19 @@ public class TestRedBlackTree {
     class TestableRedBlackTree extends RedBlackTree<Integer> {
 
         @Override
-        void flipColors(RBTreeNode<Integer> node) {
+        public void flipColors(RBTreeNode<Integer> node) {
             callsToFlipColors++;
             super.flipColors(node);
         }
 
         @Override
-        RBTreeNode<Integer> rotateRight(RBTreeNode<Integer> node) {
+        public RBTreeNode<Integer> rotateRight(RBTreeNode<Integer> node) {
             callsToRotateRight++;
             return super.rotateRight(node);
         }
 
         @Override
-        RBTreeNode<Integer> rotateLeft(RBTreeNode<Integer> node) {
+        public RBTreeNode<Integer> rotateLeft(RBTreeNode<Integer> node) {
             callsToRotateLeft++;
             return super.rotateLeft(node);
         }

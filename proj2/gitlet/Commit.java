@@ -42,4 +42,10 @@ public class Commit implements Serializable {
     public void initMap() {
         this.map = new HashMap<>();
     }
+    public void setMap(HashMap<String, String> map) {
+        this.map = map;
+    }
+    public String getAuthor() {
+        return author;
+    }
 }

@@ -23,7 +23,8 @@ public class Main {
                 repository.add(args);
                 break;
             case "commit":
-
+                repository.commit(args[1]);
+                break;
         }
     }
 }

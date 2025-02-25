@@ -1,8 +1,12 @@
 package gitlet;
 
+import jh61b.junit.In;
+
 import java.io.File;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import static gitlet.Utils.*;
 
@@ -61,7 +65,7 @@ public class Repository {
             HEADS_DIR.mkdir();
             STAGE_DIR.mkdir();
             //获取对象的hashcode作为文件名称，这里不用检查文件内容，所以使用hashcode
-            String uni_code = Integer.toHexString(init.hashCode());
+            String uni_code = Utils.sha1(Integer.toString(init.hashCode()));
 
             //
             File commit_dir_sha = join(BLOB_DIR, uni_code.substring(0, 2));
@@ -105,13 +109,7 @@ public class Repository {
             String con_sha1 = Utils.sha1(contents);
 
             //和已经commit的内容进行对比
-            //读取当前头指针对应的文件名
-            String uni_code = readContentsAsString(HEAD);
-            //得到文件名所在的地址
-            File blob = join(BLOB_DIR, uni_code.substring(0, 2), uni_code);
-            //得到head指向的commit的内容
-            Commit head = readObject(blob, Commit.class);
-
+            Commit head = getHeadCommit();
             //判断上一次提交是否存在当前文件
             if (head.getMap() == null) {//是否问init的状态
                 createStage(fileName, con_sha1, contents);
@@ -140,7 +138,7 @@ public class Repository {
             stageMap = readObject(stage, HashMap.class);
             //获取暂存区里的文件的sha1值
             String file_sha1 = stageMap.get(fileName);
-            if (!con_sha1.equals(file_sha1)) {//看问价是否有改动
+            if (!con_sha1.equals(file_sha1)) {//看文件是否有改动
                 //改动了就重新更新暂存区的内容
                 stageMap.put(fileName, con_sha1);
             }
@@ -204,7 +202,73 @@ public class Repository {
         }
     }
 
-    public void commit(String message) {
+    public Commit getHeadCommit() {
+        //读取当前头指针对应的文件名
+        String uni_code = readContentsAsString(HEAD);
+        //得到文件名所在的地址
+        File blob = join(BLOB_DIR, uni_code.substring(0, 2), uni_code);
+        //返回head指向的commit的内容
+        return readObject(blob, Commit.class);
+    }
 
+    /**
+     * Saves a snapshot of tracked files in the current commit and staging area so they
+     * can be restored at a later time, creating a new commit. The commit is said to be
+     * tracking the saved files. By default, each commit’s snapshot of files will be
+     * exactly the same as its parent commit’s snapshot of files; it will keep versions
+     * of files exactly as they are, and not update them. A commit will only update the
+     * contents of files it is tracking that have been staged for addition at the time
+     * of commit, in which case the commit will now include the version of the file that
+     * was staged instead of the version it got from its parent. A commit will save and
+     * start tracking any files that were staged for addition but weren’t tracked by its
+     * parent. Finally, files tracked in the current commit may be untracked in the new
+     * commit as a result being staged for removal by the rm command (below).
+     * @param message 用户提交的消息
+     */
+    public void commit(String message) {
+        //找到暂存区的文件
+        File stage = Utils.join(STAGE_DIR, "stage");
+        HashMap<String, String> stageMap;
+        //判断暂存区是否为空
+        if (!stage.exists()) {//暂存区不为空
+            System.out.println("no new commits");
+            System.exit(0);
+        }
+        //读取放在暂存区的文件
+        stageMap = Utils.readObject(stage, HashMap.class);
+
+        //获取head指向的commit
+        Commit head = getHeadCommit();
+        String uni_code = readContentsAsString(HEAD);
+        //新建commit
+        Commit commit = new Commit(message,"master", new Date().toString(), uni_code);
+        HashMap<String, String> map = new HashMap<>();
+        //将之前的commit内容和新建的放到一起
+        if (head.getMap() != null) {
+            head.getMap().forEach((key, value) -> map.put(key,value));
+        }
+        stageMap.forEach(((key, value) -> map.put(key,value)));
+        commit.setMap(map);
+
+        //获取当前提交的sha1值
+        String sha1 = sha1(Integer.toString(commit.hashCode()));
+        //修改head的指向，变为当前sha1值
+        Utils.writeContents(HEAD, sha1);
+
+        //修改当前分支的最前端指向
+        File curBranch = join(HEADS_DIR, head.getAuthor());
+        Utils.writeContents(curBranch, sha1);
+
+        //将当前commit写入文件
+        File newCommitDir = Utils.join(BLOB_DIR, sha1.substring(0,2));
+        if (!newCommitDir.exists()) {
+            newCommitDir.mkdir();
+        }
+        File newCommit = Utils.join(newCommitDir, sha1);
+        Utils.writeObject(newCommit, commit);
+
+        //清理暂存区
+        stageMap = null;
+        Utils.writeObject(stage, stageMap);
     }
 }

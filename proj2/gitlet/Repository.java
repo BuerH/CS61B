@@ -228,26 +228,46 @@ public class Repository {
     public void commit(String message) {
         //找到暂存区的文件
         File stage = Utils.join(STAGE_DIR, "stage");
-        HashMap<String, String> stageMap;
+        HashMap<String, String> stageMap = null;
+
+        File unstage = Utils.join(STAGE_DIR, "unstage");
+        HashSet<String> unstageSet;
         //判断暂存区是否为空
-        if (!stage.exists()) {//暂存区不为空
+        if (!stage.exists() && !unstage.exists()) {//暂存区不为空
             System.out.println("no new commits");
             System.exit(0);
         }
         //读取放在暂存区的文件
-        stageMap = Utils.readObject(stage, HashMap.class);
+        if (stage.exists()) {
+            stageMap = Utils.readObject(stage, HashMap.class);
+        }
+        if (unstage.exists()) {
+            unstageSet = Utils.readObject(unstage, HashSet.class);
+        } else {
+            unstageSet = null;
+        }
 
         //获取head指向的commit
         Commit head = getHeadCommit();
         String uni_code = readContentsAsString(HEAD);
         //新建commit
-        Commit commit = new Commit(message,"master", new Date().toString(), uni_code);
+        Commit commit = new Commit(message, head.getAuthor(), new Date().toString(), uni_code);
         HashMap<String, String> map = new HashMap<>();
         //将之前的commit内容和新建的放到一起
         if (head.getMap() != null) {
             head.getMap().forEach((key, value) -> map.put(key,value));
         }
-        stageMap.forEach(((key, value) -> map.put(key,value)));
+        if (stageMap != null) {
+            stageMap.forEach(((key, value) -> map.put(key,value)));
+        }
+        if (unstageSet != null) {
+            for (String key : map.keySet()){
+                if (unstageSet.contains(key)) {
+                    map.remove(key);
+                }
+            }
+        }
+
         commit.setMap(map);
 
         //获取当前提交的sha1值
@@ -270,5 +290,47 @@ public class Repository {
         //清理暂存区
         stageMap = null;
         Utils.writeObject(stage, stageMap);
+        unstageSet = null;
+        Utils.writeObject(unstage, unstageSet);
+    }
+
+    public void remove(String[] args) {
+        if (args.length < 2) {
+            System.out.println("Not enough arguments");
+            System.exit(0);
+        }
+        //文件名
+        String fileName = args[1];
+        Commit head = getHeadCommit();
+        //找到暂存区的文件
+        File stage = Utils.join(STAGE_DIR, "stage");
+        HashMap<String, String> stageMap = null;
+
+        //需要从commit中移除的文件
+        File unstage = Utils.join(STAGE_DIR, "unstage");
+        HashSet<String> unstageSet = null;
+
+        if (Utils.readObject(stage, HashMap.class) != null) {
+            stageMap = Utils.readObject(stage, HashMap.class);
+        }
+        //从stage中删除
+        if (stageMap != null && stageMap.containsKey(fileName)) {
+            stageMap.remove(fileName);
+        } else if (Utils.restrictedDelete(fileName)) {//不在stage中，直接删除文件，并添加到unstageSet中，在commit时删掉该文件的跟踪
+            if (unstage.exists()) {
+                unstageSet = Utils.readObject(unstage, HashSet.class);
+            }
+            if (unstageSet != null) {
+                if (!unstageSet.contains(fileName)) {
+                    unstageSet.add(fileName);
+                }
+            } else {
+                unstageSet = new HashSet<>();
+                unstageSet.add(fileName);
+            }
+            Utils.writeObject(unstage, unstageSet);
+        } else {//既不在暂存区，也没有这个文件
+            System.out.println("No reason to remove the file.");
+        }
     }
 }

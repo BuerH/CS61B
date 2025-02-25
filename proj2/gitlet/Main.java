@@ -25,6 +25,9 @@ public class Main {
             case "commit":
                 repository.commit(args[1]);
                 break;
+            case "rm":
+                repository.remove(args);
+                break;
         }
     }
 }
